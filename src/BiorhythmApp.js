@@ -107,6 +107,7 @@ const BiorhythmApp = () => {
   const [chartData, setChartData] = useState(
     calculateBiorhythm("1961-09-26", moment())
   );
+  const [viewDate, setViewDate] = useState(moment().format("YYYY-MM-DD"));
 
   // Update chart data based on the selected date
   const updateChart = (date) =>
@@ -114,19 +115,21 @@ const BiorhythmApp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateChart(selectedDate);
+    updateChart(viewDate);
   };
 
   const handleDayChange = (days) => {
     const newDate = moment(selectedDate).add(days, "days").format("YYYY-MM-DD");
     setSelectedDate(newDate);
     updateChart(newDate);
+    setViewDate(newDate);
   };
 
   const handleToday = () => {
     const today = moment().format("YYYY-MM-DD");
     setSelectedDate(today);
     updateChart(today);
+    setViewDate(today);
   };
 
   return (
@@ -142,6 +145,16 @@ const BiorhythmApp = () => {
               required
             />
           </Form.Group>
+
+          <Form.Group controlId="viewDate" className="mt-3">
+            <Form.Label>Ngày muốn xem:</Form.Label>
+            <Form.Control
+              type="date"
+              value={viewDate}
+              onChange={(e) => setViewDate(e.target.value)}
+            />
+          </Form.Group>
+
           <Button className="mt-2" type="submit" variant="primary" block>
             <FontAwesomeIcon icon={faCalculator} className="me-2" />
             Tính
@@ -163,7 +176,7 @@ const BiorhythmApp = () => {
               <FontAwesomeIcon icon={faArrowRight} />
             </Button>
           </div>
-          <BiorhythmTable data={chartData} selectedDate={selectedDate} />
+          <BiorhythmTable data={chartData} selectedDate={viewDate} />
           <BiorhythmChart data={chartData} />
         </Card>
       )}

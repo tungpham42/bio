@@ -70,7 +70,7 @@ const BiorhythmTable = ({ data, selectedDate }) => {
   );
 
   return (
-    <Table striped bordered hover className="mt-4">
+    <Table size="lg" striped bordered hover className="mt-4">
       <thead>
         <tr>
           <th>Ngày</th>
@@ -156,7 +156,8 @@ const BiorhythmApp = () => {
               <FontAwesomeIcon icon={faArrowLeft} />
             </Button>
             <Button variant="info" onClick={handleToday}>
-              <FontAwesomeIcon icon={faCalendarDay} />
+              <FontAwesomeIcon icon={faCalendarDay} className="me-2" />
+              Hôm nay
             </Button>
             <Button variant="secondary" onClick={() => handleDayChange(1)}>
               <FontAwesomeIcon icon={faArrowRight} />

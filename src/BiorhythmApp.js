@@ -5,6 +5,8 @@ import HighchartsReact from "highcharts-react-official";
 import moment from "moment";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
   faArrowLeft,
   faArrowRight,
   faCalculator,
@@ -41,13 +43,25 @@ const calculateBiorhythm = (birthDate, selectedDate) => {
 };
 
 // Chart component displaying the biorhythm data
-const BiorhythmChart = ({ data }) => {
+const BiorhythmChart = ({ data, onPointClick }) => {
   const options = {
     title: { text: "Biểu đồ Nhịp Sinh Học" },
     xAxis: {
       categories: data.map((d) => moment(d.date).format("YYYY-MM-DD")),
     },
     yAxis: { title: { text: "Phần trăm (%)" }, min: 0, max: 100 },
+    plotOptions: {
+      series: {
+        cursor: "pointer",
+        point: {
+          events: {
+            click: function () {
+              onPointClick(this.category);
+            },
+          },
+        },
+      },
+    },
     series: [
       { name: "Sức khỏe", data: data.map((d) => d.physical), color: "red" },
       { name: "Tình cảm", data: data.map((d) => d.emotional), color: "blue" },
@@ -105,13 +119,19 @@ const BiorhythmApp = () => {
     moment().format("YYYY-MM-DD")
   );
   const [chartData, setChartData] = useState(
-    calculateBiorhythm("1961-09-26", moment())
+    calculateBiorhythm(birthDate, selectedDate)
   );
-  const [viewDate, setViewDate] = useState(moment().format("YYYY-MM-DD"));
+  const [viewDate, setViewDate] = useState(selectedDate);
 
-  // Update chart data based on the selected date
-  const updateChart = (date) =>
+  const updateChart = (date) => {
     setChartData(calculateBiorhythm(birthDate, date));
+  };
+
+  const handlePointClick = (date) => {
+    setSelectedDate(date);
+    updateChart(date);
+    setViewDate(date);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -165,19 +185,25 @@ const BiorhythmApp = () => {
       {chartData.length > 0 && (
         <Card className="mt-4 p-4">
           <div className="d-flex justify-content-between mb-3">
+            <Button variant="warning" onClick={() => handleDayChange(-7)}>
+              <FontAwesomeIcon icon={faAngleDoubleLeft} />
+            </Button>
             <Button variant="secondary" onClick={() => handleDayChange(-1)}>
               <FontAwesomeIcon icon={faArrowLeft} />
             </Button>
-            <Button variant="info" onClick={handleToday}>
+            <Button variant="success" onClick={handleToday}>
               <FontAwesomeIcon icon={faCalendarDay} className="me-2" />
               Hôm nay
             </Button>
             <Button variant="secondary" onClick={() => handleDayChange(1)}>
               <FontAwesomeIcon icon={faArrowRight} />
             </Button>
+            <Button variant="warning" onClick={() => handleDayChange(7)}>
+              <FontAwesomeIcon icon={faAngleDoubleRight} />
+            </Button>
           </div>
           <BiorhythmTable data={chartData} selectedDate={viewDate} />
-          <BiorhythmChart data={chartData} />
+          <BiorhythmChart data={chartData} onPointClick={handlePointClick} />
         </Card>
       )}
     </Container>

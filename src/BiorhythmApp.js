@@ -55,6 +55,9 @@ const BiorhythmChart = ({ data, onPointClick }) => {
     yAxis: { title: { text: "Phần trăm (%)" }, min: 0, max: 100 },
     plotOptions: {
       series: {
+        marker: {
+          enabled: false,
+        },
         cursor: "pointer",
         point: {
           events: {

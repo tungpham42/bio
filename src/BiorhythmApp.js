@@ -45,6 +45,9 @@ const calculateBiorhythm = (birthDate, selectedDate) => {
 // Chart component displaying the biorhythm data
 const BiorhythmChart = ({ data, onPointClick }) => {
   const options = {
+    chart: {
+      type: "spline",
+    },
     title: { text: "Biểu đồ Nhịp Sinh Học" },
     xAxis: {
       categories: data.map((d) => moment(d.date).format("YYYY-MM-DD")),
